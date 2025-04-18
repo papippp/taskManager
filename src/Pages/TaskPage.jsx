@@ -18,7 +18,7 @@ export default function TaskPage() {
     const tasks = useSelector(state => state.tasks.tasks)
     const dispatch = useDispatch()
     const [selectTask, setSelectTask] = useState(false)
-    const handleEdit = (task) => {
+    const handleEdit = (tasks) => {
         setSelectTask(tasks)
         setUpdateModal(true)
     }
@@ -77,7 +77,7 @@ export default function TaskPage() {
                         tasks.length > 0 ? (
                             tasks.map((data) => (
                                 <Col key={data.id}>
-                                    <TaskSphere key={data.id} title={data.title} description={data.description} status={data.status} priority={data.priority} onEdit={handleEdit} />
+                                    <TaskSphere id={data.id} title={data.title} description={data.description} status={data.status} priority={data.priority} onEdit={handleEdit} />
                                 </Col>
                             ))
 

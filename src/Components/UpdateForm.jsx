@@ -32,7 +32,7 @@ export default function UpdateForm({ show, onHide, tasks }) {
 
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleSave}>
+                <Form >
                     <FloatingLabel className='mb-3' label='edit Title' controlId='taskTitle' >
                         <Form.Control
                             type='text'
@@ -87,7 +87,7 @@ export default function UpdateForm({ show, onHide, tasks }) {
                         <Button variant="secondary" onClick={onHide}>
                             <i className='bi bi-x'></i> Cancel
                         </Button>
-                        <Button className="me-1" variant="primary" type="submit">
+                        <Button className="me-1" variant="primary" onClick={handleSave}>
                             <i className='bi bi-save'></i> save
                         </Button>
                     </div>

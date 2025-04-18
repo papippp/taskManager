@@ -53,6 +53,20 @@ export const updateTasks = createAsyncThunk(
     }
 )
 
+export const deleteTask = createAsyncThunk(
+    'deleteTasks',
+    async (id) => {
+        const decodeUser = localStorage.getItem('authToken')
+        const user = jwtDecode(decodeUser)
+        const userId = user.id
+        await axios.delete(`${BASE_URL}/tasks/${userId}/${id}`)
+        return id
+
+    }
+
+
+)
+
 const taskSlice = createSlice({
     name: 'tasks',
     initialState: { tasks: [], loading: true },
@@ -71,6 +85,9 @@ const taskSlice = createSlice({
                 if (index !== -1) {
                     state.tasks[index] = action.payload
                 }
+            })
+            .addCase(deleteTask.fulfilled, (state, action) => {
+                state.tasks = state.tasks.filter(task => task.id !== action.payload)
             })
 
     }

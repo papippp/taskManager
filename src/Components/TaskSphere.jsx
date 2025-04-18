@@ -1,8 +1,17 @@
 
 import { Badge, Button, Card } from "react-bootstrap";
 import UpdateForm from "./UpdateForm";
+import { useDispatch } from "react-redux";
+import { deleteTask } from "./features/tasks/taskSlice";
 
-export default function TaskSphere({ title, description, status, priority, onEdit }) {
+export default function TaskSphere({ id, title, description, status, priority, onEdit }) {
+    const dispatch = useDispatch()
+    const handleDelete = () => {
+        const isConfirmed = window.confirm('Are sure you want to delete permanently')
+        if (isConfirmed) {
+            dispatch(deleteTask(id))
+        }
+    }
 
 
     const getPriority = (priority) => {
@@ -14,7 +23,7 @@ export default function TaskSphere({ title, description, status, priority, onEdi
             case 3:
                 return 'high';
             default:
-                return 'unknown'
+                return 'low'
         }
     }
 
@@ -27,7 +36,7 @@ export default function TaskSphere({ title, description, status, priority, onEdi
             case 'done':
                 return 'success';
             default:
-                return 'secondary'
+                return 'info'
 
         }
     }
@@ -50,7 +59,7 @@ export default function TaskSphere({ title, description, status, priority, onEdi
                 <Card.Body>
                     <div className="d-flex justify-content-between align-items-start">
                         <Card.Title style={{ fontSize: "1.1rem" }}>{title}</Card.Title>
-                        <Badge bg={getStatus(status)}>{status || 'unknown'}</Badge>
+                        <Badge bg={getStatus(status)}>{status || 'To do'}</Badge>
                     </div>
                     <Card.Text className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>{description}</Card.Text>
                     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -62,7 +71,7 @@ export default function TaskSphere({ title, description, status, priority, onEdi
                             variant="outline-primary"
                             size="sm"
                             style={{ borderRadius: "6px" }}
-                            onClick={onEdit}
+                            onClick={() => onEdit({ title, description, status, priority })}
                         >
                             <i className="bi bi-pen"></i>
                         </Button>
@@ -70,6 +79,7 @@ export default function TaskSphere({ title, description, status, priority, onEdi
                             variant="outline-danger"
                             size="sm"
                             style={{ borderRadius: "6px" }}
+                            onClick={handleDelete}
                         >
                             <i className="bi bi-trash"></i>
                         </Button>
