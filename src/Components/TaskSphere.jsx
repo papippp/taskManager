@@ -63,7 +63,15 @@ export default function TaskSphere({ id, title, description, status, priority, o
                     </div>
                     <Card.Text className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>{description}</Card.Text>
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <Badge bg="secondary">{getPriority(priority)}</Badge>
+                        <Badge bg={
+                            getPriority(priority) === 'low' ? "primary" :
+                                getPriority(priority) === 'medium' ? "secondary" :
+                                    getPriority(priority) === 'high' ? "danger" :
+                                        'primary'
+
+                        }
+
+                        >{getPriority(priority)}</Badge>
                     </div>
 
                     <div className="d-flex justify-content-end align-items-center gap-2">
@@ -71,7 +79,7 @@ export default function TaskSphere({ id, title, description, status, priority, o
                             variant="outline-primary"
                             size="sm"
                             style={{ borderRadius: "6px" }}
-                            onClick={() => onEdit({ title, description, status, priority })}
+                            onClick={() => onEdit({ id, title, description, status, priority })}
                         >
                             <i className="bi bi-pen"></i>
                         </Button>
