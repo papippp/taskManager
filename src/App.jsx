@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AuthPage from './Pages/AuthPage'
 import TaskPage from './Pages/TaskPage'
+import './App.css'
 
 import './App.css'
 import { Provider } from 'react-redux'

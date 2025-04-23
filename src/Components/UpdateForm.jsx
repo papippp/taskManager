@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { Button, FloatingLabel, Form, Modal } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import { updateTasks } from './features/tasks/taskSlice'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function UpdateForm({ show, onHide, tasks }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [status, setStatus] = useState('To DO')
     const [priority, setPriority] = useState(1)
+    const [dueDate, setdueDate] = useState(null)
+    const [datePicker, setDatePicker] = useState(false)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -16,13 +20,18 @@ export default function UpdateForm({ show, onHide, tasks }) {
             setDescription(tasks.description || '')
             setStatus(tasks.status || 'To Do')
             setPriority(tasks.priority || 1)
+            setdueDate(tasks.due_date ? new Date(tasks.due_date) : null)
         }
     }, [tasks])
 
     const handleSave = (e) => {
         e.preventDefault()
-        dispatch(updateTasks({ id: tasks.id, title, description, status, priority }))
+        dispatch(updateTasks({ id: tasks.id, title, description, status, priority, dueDate: dueDate ? dueDate.toISOString() : null }))
         onHide()
+    }
+    const handleDate = (date) => {
+        setdueDate(date)
+        setDatePicker(false)
     }
 
     return (
@@ -60,6 +69,43 @@ export default function UpdateForm({ show, onHide, tasks }) {
                             Please provide a task title
                         </Form.Control.Feedback>
                     </FloatingLabel>
+                    <Form.Group className='mb-3'>
+                        <Form.Label>Due date</Form.Label>
+                        <div className='d-flex align-items-center position-relative'>
+                            <DatePicker
+                                selected={dueDate}
+                                onChange={handleDate}
+                                minDate={new Date()}
+                                placeholderText='Select a due date'
+                                className='form-control'
+                                open={datePicker}
+                                onClickOutside={() => setDatePicker(false)}
+                                onInputClick={() => setDatePicker(true)}
+                                dateFormat='MMMM d, yyyy'
+                                showPopperArrow={true}
+                                popperPlacement='bottom-start'
+                                popperModifiers={[
+                                    {
+                                        name: 'offset',
+                                        options: {
+                                            offset: [0, 10],
+                                        },
+                                    },
+                                ]}
+                                calendarClassName='border-0 shadow'
+                                wrapperClassName='w-100'
+                            />
+                            {dueDate && (
+                                <Button
+                                    variant='link'
+                                    className='text-danger ms-2 position-absolute end-0'
+                                    onClick={() => setdueDate(null)}
+                                >
+                                    <i className='bi bi-x'></i>
+                                </Button>
+                            )}
+                        </div>
+                    </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Edit Status</Form.Label>
                         <Form.Select name="status" value={status} onChange={(e) => setStatus(e.target.value)}>

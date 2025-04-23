@@ -1,10 +1,11 @@
 
-import { Badge, Button, Card } from "react-bootstrap";
+import { Badge, Button, Card, OverlayTrigger, Tooltip } from "react-bootstrap";
 import UpdateForm from "./UpdateForm";
 import { useDispatch } from "react-redux";
 import { deleteTask } from "./features/tasks/taskSlice";
+import { differenceInDays, format, isPast, isToday, isTomorrow } from "date-fns";
 
-export default function TaskSphere({ id, title, description, status, priority, onEdit }) {
+export default function TaskSphere({ id, title, description, status, priority, dueDate, onEdit }) {
     const dispatch = useDispatch()
     const handleDelete = () => {
         const isConfirmed = window.confirm('Are sure you want to delete permanently')
@@ -41,6 +42,49 @@ export default function TaskSphere({ id, title, description, status, priority, o
         }
     }
 
+    const dateBadge = (dueDate, status) => {
+        if (!dueDate) return null;
+        try {
+            const date = new Date(dueDate);
+            if (isNaN(date.getTime())) {
+                console.warn(`Invalid due date: ${dueDate}`);
+                return <Badge bg='danger'>Invalid Date</Badge>;
+            }
+
+            let variant = 'secondary';
+            let text = format(date, 'MMM d');
+
+            if (isPast(date) && status?.toLowerCase() !== 'done') {
+                variant = 'danger';
+                text = 'Overdue';
+            } else if (isToday(date)) {
+                variant = 'warning';
+                text = 'Today';
+            } else if (isTomorrow(date)) {
+                variant = 'info';
+                text = 'Tomorrow';
+            } else if (differenceInDays(date, new Date()) <= 7) {
+                variant = 'primary';
+                text = format(date, 'EEE');
+            }
+
+            return (
+                <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>{format(date, 'MMMM d, yyyy')}</Tooltip>}
+                >
+                    <Badge bg={variant} className="ms-2">
+                        {text}
+                    </Badge>
+                </OverlayTrigger>
+            );
+        } catch (error) {
+            console.error('Error processing date:', error);
+            return null;
+        }
+
+    }
+
 
 
 
@@ -60,6 +104,7 @@ export default function TaskSphere({ id, title, description, status, priority, o
                     <div className="d-flex justify-content-between align-items-start">
                         <Card.Title style={{ fontSize: "1.1rem" }}>{title}</Card.Title>
                         <Badge bg={getStatus(status)}>{status || 'To do'}</Badge>
+                        {dateBadge(dueDate, status)}
                     </div>
                     <Card.Text className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>{description}</Card.Text>
                     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -72,6 +117,14 @@ export default function TaskSphere({ id, title, description, status, priority, o
                         }
 
                         >{getPriority(priority)}</Badge>
+
+                        {dueDate && !isNaN(new Date(dueDate).getTime()) && (
+                            <small className="text-muted">
+                                Due: {format(new Date(dueDate), "MMM d, yyyy")}
+                            </small>
+                        )}
+
+
                     </div>
 
                     <div className="d-flex justify-content-end align-items-center gap-2">
@@ -79,7 +132,7 @@ export default function TaskSphere({ id, title, description, status, priority, o
                             variant="outline-primary"
                             size="sm"
                             style={{ borderRadius: "6px" }}
-                            onClick={() => onEdit({ id, title, description, status, priority })}
+                            onClick={() => onEdit({ id, title, description, status, priority, dueDate })}
                         >
                             <i className="bi bi-pen"></i>
                         </Button>

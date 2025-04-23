@@ -26,14 +26,17 @@ export default function TaskPage() {
 
 
 
-    useEffect(() => {
-        const token = localStorage.getItem('authToken')
-        if (token) {
-            const decodedToken = jwtDecode(token)
-            const userId = decodedToken.id
-            dispatch(fetchTasks(userId))
-        }
-    }, [dispatch])
+    {
+        /** useEffect(() => {
+            const token = localStorage.getItem('authToken')
+            if (token) {
+                const decodedToken = jwtDecode(token)
+                const userId = decodedToken.id
+                dispatch(fetchTasks(userId))
+            }
+        }, [dispatch])
+        */
+    }
 
     const navigate = useNavigate();
     const [authToken, setAuthToken] = useLocalStorage('authToken', '')
@@ -46,7 +49,11 @@ export default function TaskPage() {
         if (!authToken) {
             navigate('/login')
         }
-
+        else {
+            const token = jwtDecode(authToken)
+            const userId = token.id
+            dispatch(fetchTasks(userId))
+        }
     },);
 
     const handleLogout = () => {
@@ -77,7 +84,7 @@ export default function TaskPage() {
                         tasks.length > 0 ? (
                             tasks.map((data) => (
                                 <Col key={data.id}>
-                                    <TaskSphere id={data.id} title={data.title} description={data.description} status={data.status} priority={data.priority} onEdit={handleEdit} />
+                                    <TaskSphere id={data.id} title={data.title} description={data.description} status={data.status} priority={data.priority} onEdit={handleEdit} dueDate={data.due_date} />
                                 </Col>
                             ))
 

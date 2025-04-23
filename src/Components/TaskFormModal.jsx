@@ -3,23 +3,32 @@ import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { createTasks } from './features/tasks/taskSlice';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function TaskFormModal({ show, onHide }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [status, setStatus] = useState('todo')
     const [priority, setPriority] = useState(1)
+    const [dueDate, setDueDate] = useState(null)
+    const [datePicker, setDatePicker] = useState(false)
 
     const dispatch = useDispatch()
 
     const handleSave = (e) => {
         e.preventDefault()
-        dispatch(createTasks({ title, description, status, priority }))
+        dispatch(createTasks({ title, description, status, priority, dueDate: dueDate ? dueDate.toISOString() : null }))
         onHide()
         setTitle('')
         setDescription('')
         setStatus('To Do')
         setPriority('1')
+    }
+
+    const handleDate = (date) => {
+        setDueDate(date)
+        setDatePicker(false)
     }
 
 
@@ -60,6 +69,64 @@ export default function TaskFormModal({ show, onHide }) {
                             Please provide a task description
                         </Form.Control.Feedback>
                     </FloatingLabel>
+
+                    <Form.Group className='mb-3'>
+                        <Form.Label>Due date</Form.Label>
+                        <div className='d-flex align-items-center position-relative'>
+                            <DatePicker
+                                selected={dueDate}
+                                onChange={handleDate}
+                                minDate={new Date()}
+                                placeholderText='Select a due date'
+                                className='form-control rounded'
+                                open={datePicker}
+                                onClickOutside={() => setDatePicker(false)}
+                                onInputClick={() => setDatePicker(true)}
+                                dateFormat='MMMM d, yyyy'
+                                showPopperArrow={false}
+                                popperPlacement='bottom-start'
+                                popperModifiers={[
+                                    {
+                                        name: 'offset',
+                                        options: {
+                                            offset: [0, 10],
+                                        },
+                                    },
+                                    {
+                                        name: 'preventOverflow',
+                                        options: {
+                                            rootBoundary: 'viewport',
+                                            tether: false,
+                                            altAxis: true,
+                                        },
+                                    },
+                                ]}
+                                calendarClassName='custom-datePicker'
+                                wrapperClassName='w-100'
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                            />
+                            <Button
+                                variant='outline-secondary'
+                                className='ms-2'
+                                onClick={() => setDatePicker(!datePicker)}
+                                type="button"
+                            >
+                                <i className='bi bi-calendar'></i>
+                            </Button>
+                            {dueDate && (
+                                <Button
+                                    variant='link'
+                                    className='text-danger position-absolute end-0 '
+                                    onClick={() => setDueDate(null)}
+                                    style={{ right: '40px' }}
+                                >
+                                    <i className='bi bi-x'></i>
+                                </Button>
+                            )}
+                        </div>
+                    </Form.Group>
 
                     <Form.Group className="mb-3">
                         <Form.Label>Status</Form.Label>

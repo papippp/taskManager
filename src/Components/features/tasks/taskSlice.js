@@ -15,7 +15,7 @@ export const fetchTasks = createAsyncThunk(
 
 export const createTasks = createAsyncThunk(
     'createTask',
-    async ({ title, description, status, priority }) => {
+    async ({ title, description, status, priority, dueDate }) => {
         const decodeUser = localStorage.getItem('authToken')
         const user = jwtDecode(decodeUser)
         const userId = user.id
@@ -24,6 +24,7 @@ export const createTasks = createAsyncThunk(
             description: description,
             status: status,
             priority: priority,
+            due_date: dueDate,
             user_id: userId
         }
         const response = await axios.post(`${BASE_URL}/tasks`, data)
@@ -34,7 +35,7 @@ export const createTasks = createAsyncThunk(
 
 export const updateTasks = createAsyncThunk(
     'EditTasks',
-    async ({ id, title, description, status, priority }) => {
+    async ({ id, title, description, status, priority, dueDate }) => {
         const decodeUser = localStorage.getItem('authToken')
         const user = jwtDecode(decodeUser)
         const userId = user.id
@@ -43,6 +44,7 @@ export const updateTasks = createAsyncThunk(
             description: description,
             status: status,
             priority: priority,
+            due_date: dueDate,
             user_id: userId
         }
 
