@@ -161,11 +161,12 @@ export default function TaskFormModal({ show, onHide }) {
                             <FaTimes className="me-1" /> Cancel
                         </Button>
                         <Button variant="primary" type="submit">
-                            <FaSave className="me-1" />
+                            save
                         </Button>
                     </div>
                 </Form>
             </Modal.Body>
         </Modal>
+
     );
 }

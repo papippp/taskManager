@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = 'https://a141d59a-f07d-4d7f-bff1-bf133dee0026-00-1c9osy6krsm5l.sisko.replit.dev'
+const BASE_URL = 'https://ppp-taskmanager.replit.app'
 
 export const fetchTasks = createAsyncThunk(
     'fetchTask',

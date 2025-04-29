@@ -12,7 +12,7 @@ export default function AuthPage() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const [authToken, setAuthToken] = useLocalStorage('authToken', '')
-    const BASE_URL = "https://a141d59a-f07d-4d7f-bff1-bf133dee0026-00-1c9osy6krsm5l.sisko.replit.dev";
+    const BASE_URL = "https://ppp-taskmanager.replit.app";
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -30,7 +30,7 @@ export default function AuthPage() {
 
         }
         catch (err) {
-            setError('Inavlid username or password,try again')
+            setError(err, 'Inavlid username or password,try again')
         }
         finally {
             setLoading(false)
@@ -72,26 +72,33 @@ export default function AuthPage() {
 
 
     return (
-        <Container style={{ maxWidth: '400px' }} className="mt-5">
-            <h2 className="text-center mb-4">{isSignup ? "Sign Up" : "Login"} to TaskSphere</h2>
-            {error && <Alert variant='danger'>{error}</Alert>}
-            <Form onSubmit={handleSubmit} >
-                <Form.Group>
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control value={username} autoComplete="email" type="email" onChange={(e) => setUsername(e.target.value)} required />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                </Form.Group>
-                <Button type="submit" className="mt-3" disabled={loading}>
-                    {loading ? 'processing...' : isSignup ? "Sign Up" : "Login"}
-                </Button>
-                <Button variant="link" onClick={() => setIsSignup(!isSignup)}>
-                    {isSignup ? "Already have an account? Login" : "Need an account? Sign Up"}
-                </Button>
-            </Form>
-        </Container>
+        <>
+            <Container style={{ maxWidth: '400px' }} className="mt-5">
+                <h2 className="text-center mb-4">{isSignup ? "Sign Up" : "Login"} to TaskSphere</h2>
+                {error && <Alert variant='danger'>{error}</Alert>}
+                <Form onSubmit={handleSubmit} >
+                    <Form.Group>
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control value={username} autoComplete="email" type="email" onChange={(e) => setUsername(e.target.value)} required />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    </Form.Group>
+                    <Button type="submit" className="mt-3" disabled={loading}>
+                        {loading ? 'processing...' : isSignup ? "Sign Up" : "Login"}
+                    </Button>
+                    <Button variant="link" onClick={() => setIsSignup(!isSignup)}>
+                        {isSignup ? "Already have an account? Login" : "Need an account? Sign Up"}
+                    </Button>
+                </Form>
+            </Container>
+            <footer className="w-full text-center py-4">
+                <p className="text-center text-gray-500 text-sm">
+                    TaskSphere © {new Date().getFullYear()} - Manage your tasks with ease
+                </p>
+            </footer>
+        </>
 
     )
 }
